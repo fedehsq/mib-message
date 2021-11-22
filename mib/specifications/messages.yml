@@ -1,0 +1,57 @@
+openapi: "3.0.1"
+info:
+  title: Messages Service API
+  description: Messages Microservice of Message in a Bottle Application
+  version: "0.1"
+
+servers:
+  - url: /
+
+paths:
+  /message:
+    post:
+      summary: Add a new message
+      tags:
+        - Messages
+      operationId: mib.resources.messages.create_message
+      requestBody:
+        description: Create a new message inside microservice app
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Message'
+      responses:
+        201:
+          description: Created
+        200:
+          description: Error
+        default:
+          description: Error during creation of the message
+
+components:
+  schemas:
+    Message:
+      required:
+        - sender
+        - receiver
+        - body
+        - photo
+      type: object
+      properties:
+        sender:
+          type: integer
+          description: Id of sender
+          example: 1
+        receiver:
+          type: integer
+          description: Id of receiver
+          example: 1
+        body:
+          type: string
+          description: The body of the message
+          example: hi, how are you?
+        photo:
+          type: string
+          description: The photo encoded as a string
+          example: 1
