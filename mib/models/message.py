@@ -27,6 +27,8 @@ class Message(db.Model):
     bold = db.Column(db.Boolean, default = False)
     italic = db.Column(db.Boolean, default = False)
     underline = db.Column(db.Boolean, default = False)
+    hidden_for_sender = db.Column(db.Boolean, default = False)
+    hidden_for_receiver = db.Column(db.Boolean, default = False)
 
     def __init__(self, *args, **kw):
         super(Message, self).__init__(*args, **kw)
