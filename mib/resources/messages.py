@@ -30,7 +30,7 @@ def create_message():
     response_object = {
         'message': message.serialize(),
         'status': 'success',
-        'message': 'Successfully registered',
+        'message': 'Successfully created',
     }
 
     return jsonify(response_object), 201
