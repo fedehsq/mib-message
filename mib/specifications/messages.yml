@@ -29,6 +29,43 @@ paths:
         default:
           description: Error during creation of the message
 
+  /search:
+    post:
+      summary: returns the searched messages
+      tags:
+        - Search
+      operationId: mib.resources.messages.search_message
+      requestBody:
+        description: Returns a json containing the list of the searched messages
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Search'
+      responses:
+        201:
+          description: Ok
+        default:
+          description: Error while searching for the messages
+
+  /get_messages:
+    get:
+      summary: get the requested list of messages
+      tags:
+        - get_list
+      operationId: mib.resources.messages.get_messages
+      requestBody:
+        description: Returns a json containing the list of the requested messages
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Get_messages'
+      responses:
+        201:
+          description: Ok
+        default:
+          description: Error while searching for the requested messages
 components:
   schemas:
     Message:
@@ -37,15 +74,16 @@ components:
         - receiver
         - body
         - photo
+        - timestamp
       type: object
       properties:
         sender:
-          type: integer
-          description: Id of sender
+          type: string
+          description: email of sender
           example: 1
         receiver:
-          type: integer
-          description: Id of receiver
+          type: string
+          description: email of receiver
           example: 1
         body:
           type: string
@@ -55,3 +93,44 @@ components:
           type: string
           description: The photo encoded as a string
           example: 1
+        timestamp:
+          type: string
+          description: The timestamp of the message
+          example: 12/12/2021
+
+    Search:
+      required:
+        - id
+      type: object
+      properties:
+        id:
+          type: string
+          description: email of the user
+          example: 1
+        body:
+          type: string
+          description: body of the messge
+          example: Hi, how are you?
+        email:
+          type: string
+          description: email of the sender
+          example: example@example.com
+        date:
+          type: string
+          description: The date of the message
+          example: 03/03/2021
+
+    Get_messages:
+      required:
+        - email
+        - op
+      type: object
+      properties:
+        email:
+          type: string
+          description: email of the user
+          example: 1
+        op:
+          type: string
+          description: name of the operation
+          example: inbox

@@ -1,7 +1,8 @@
 from werkzeug.security import generate_password_hash, check_password_hash
-
+from datetime import datetime
 from mib import db
 
+import json
 
 class Message(db.Model):
     """Representation of Message model."""
@@ -10,12 +11,12 @@ class Message(db.Model):
     __tablename__ = 'Message'
 
     # A list of fields to be serialized
-    SERIALIZE_LIST = ['id', 'sender', 'receiver', 'body', 'draft', 'scheduled']
+    SERIALIZE_LIST = ['id', 'sender', 'receiver', 'body', 'draft', 'scheduled', 'timestamp', 'photo']
 
     # All fields of message
     id = db.Column(db.Integer, primary_key = True, autoincrement = True)
-    sender = db.Column(db.Integer, default=0)
-    receiver = db.Column(db.Integer, default=0)
+    sender = db.Column(db.Unicode(128), default=0)
+    receiver = db.Column(db.Unicode(128), default=0)
 
     body = db.Column(db.Unicode(8196), nullable = False, unique = False)
     photo = db.Column(db.Unicode(8196), default = 'profile_pics/profile_pic.svg')
@@ -67,7 +68,18 @@ class Message(db.Model):
         self.underline = underline
 
     def set_timestamp(self, timestamp):
-        self.timestamp = timestamp
+        ts=datetime.strptime(timestamp, '%d/%m/%Y %H:%M:%S')
+        self.timestamp = ts
+
+    def set_sent(self,sent):
+        self.sent = sent
 
     def serialize(self):
         return dict([(k, self.__getattribute__(k)) for k in self.SERIALIZE_LIST])
+
+    def to_string(self):
+        return json.dumps(
+            {'id': self.id, 'sender': self.sender, 'dest' : self.receiver, 
+             'body' : self.body, 'timestamp' : self.timestamp.strftime("%d/%m/%Y %H:%M:%S"), 'image' : self.photo, 
+             'read': self.read, 'bold': self.bold, 
+             'italic': self.italic, 'underline': self.underline})
