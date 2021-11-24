@@ -24,7 +24,9 @@ def create_message():
     message.set_bold(post_data.get('bold'))
     message.set_italic(post_data.get('italic'))
     message.set_underline(post_data.get('underline'))
-    message.set_sent(True)
+    #just for test purposes set sent=1
+    message.set_sent(1)
+    ###################
     MessageManager.create_message(message)
 
     response_object = {
@@ -55,7 +57,7 @@ def search_message():
         'status': 'success',
         'message': 'Successfully searched',
     }
-    return jsonify(response_object)
+    return jsonify(response_object), 201
 
 #this function returns the requested list of messages
 def get_messages():
@@ -67,11 +69,11 @@ def get_messages():
 
     #cases for each function
     if type_of_list == "inbox":
-        messages=db.session.query(Message).filter(Message.receiver==id_user,Message.sent==True, Message.hidden_for_receiver==False)
+        messages=db.session.query(Message).filter(Message.receiver==id_user,Message.sent==1, Message.hidden_for_receiver==False)
     if type_of_list == "scheduled":
         messages=db.session.query(Message).filter(Message.sender==id_user,Message.scheduled==True)
     if type_of_list == "sent":
-        messages=db.session.query(Message).filter(Message.sender==id_user,Message.sent==True, Message.hidden_for_sender==False)
+        messages=db.session.query(Message).filter(Message.sender==id_user,Message.sent==1, Message.hidden_for_sender==False)
     if type_of_list == "draft":
         messages=db.session.query(Message).filter(Message.sender==id_user,Message.draft==True)
         
@@ -86,8 +88,33 @@ def get_messages():
         'status':'success',
         'message':'successfully delivered list'
     }
-    return jsonify(response_object)
+    return jsonify(response_object), 201
 
+#this function returns the requested list of messages
+def get_notifications():
+    #gets from the request the id of the user and the desidered list
+    post_data=request.get_json()
+    id_user = post_data.get('email')
+    
+    #Type of notifications
+    inbox=0
+    sent=0
+
+    inbox = db.session.query(Message).filter(Message.receiver==id_user,Message.sent==1, Message.read==0).count()
+    sent  = db.session.query(Message).filter(Message.sender==id_user,Message.sent==1,Message.read==True).count()
+       
+
+    #assembling the response
+    response_object={
+        'inbox':inbox,
+        'sent':sent,
+        'message':'successfully delivered notifications'
+    }
+    return jsonify(response_object), 201
+
+##################################################################
+###############-------Auxiliary Functions-------##################
+##################################################################
 
 # Given the body, the sender and the date, returns the filtered messages
 def search_messages(id,msg_field, msg_user, msg_date):

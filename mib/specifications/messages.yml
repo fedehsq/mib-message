@@ -66,6 +66,25 @@ paths:
           description: Ok
         default:
           description: Error while searching for the requested messages
+
+  /get_notifications:
+    get:
+      summary: get the number of notifications for a given user
+      tags:
+        - Notifications
+      operationId: mib.resources.messages.get_notifications
+      requestBody:
+        description: Returns a json containing the number of notifications
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Get_notifications'
+      responses:
+        201:
+          description: Ok
+        default:
+          description: Error while searching for the requested messages
 components:
   schemas:
     Message:
@@ -80,11 +99,11 @@ components:
         sender:
           type: string
           description: email of sender
-          example: 1
+          example: example@example.com
         receiver:
           type: string
           description: email of receiver
-          example: 1
+          example: example@example.com
         body:
           type: string
           description: The body of the message
@@ -106,7 +125,7 @@ components:
         id:
           type: string
           description: email of the user
-          example: 1
+          example: example@example.com
         body:
           type: string
           description: body of the messge
@@ -129,8 +148,18 @@ components:
         email:
           type: string
           description: email of the user
-          example: 1
+          example: example@example.com
         op:
           type: string
           description: name of the operation
           example: inbox
+
+    Get_notifications:
+      required:
+        - email
+      type: object
+      properties:
+        email:
+          type: string
+          description: email of the user
+          example: example@example.com
