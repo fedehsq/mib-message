@@ -1,3 +1,4 @@
+from sqlalchemy.sql.expression import update
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 from mib import db
@@ -11,28 +12,34 @@ class Message(db.Model):
     __tablename__ = 'Message'
 
     # A list of fields to be serialized
-    SERIALIZE_LIST = ['id', 'sender', 'receiver', 'body', 'draft', 'scheduled', 'timestamp', 'photo']
+    SERIALIZE_LIST = ['id', 'sender', 'receiver', 'body', 'photo',\
+             'draft', 'scheduled', 'sent', 'read', 'bold', 'italic',\
+             'underline', 'hidden_for_sender', 'hidden_for_receiver']
 
     # All fields of message
-    id = db.Column(db.Integer, primary_key = True, autoincrement = True)
-    sender = db.Column(db.Unicode(128), default=0)
-    receiver = db.Column(db.Unicode(128), default=0)
-
-    body = db.Column(db.Unicode(8196), nullable = False, unique = False)
-    photo = db.Column(db.Unicode(8196), default = 'profile_pics/profile_pic.svg')
-    timestamp = db.Column(db.DateTime())
-    draft = db.Column(db.Boolean, default = True)
-    scheduled = db.Column(db.Boolean, default = False)
-    sent = db.Column(db.Integer, default =0)
+    id = db.Column(db.Integer, primary_key = True, autoincrement = True, nullable = False)
+    sender = db.Column(db.Unicode(128))
+    receiver = db.Column(db.Unicode(128))
+    body = db.Column(db.Unicode(8196))
+    photo = db.Column(db.String)
+    timestamp = db.Column(db.DateTime(timezone = True))
+    draft = db.Column(db.Boolean)
+    scheduled = db.Column(db.Boolean)
+    sent = db.Column(db.Integer, default = 0)
     read = db.Column(db.Boolean, default = False)
-    bold = db.Column(db.Boolean, default = False)
-    italic = db.Column(db.Boolean, default = False)
-    underline = db.Column(db.Boolean, default = False)
+    bold = db.Column(db.Boolean)
+    italic = db.Column(db.Boolean)
+    underline = db.Column(db.Boolean)
     hidden_for_sender = db.Column(db.Boolean, default = False)
     hidden_for_receiver = db.Column(db.Boolean, default = False)
 
     def __init__(self, *args, **kw):
         super(Message, self).__init__(*args, **kw)
+
+    def get_date(self):
+        date = self.timestamp.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+        date = datetime.strptime(date, "%d/%m/%Y")
+        return date
 
     def set_sender(self, sender):
         self.sender = sender
@@ -68,18 +75,21 @@ class Message(db.Model):
         self.underline = underline
 
     def set_timestamp(self, timestamp):
-        ts=datetime.strptime(timestamp, '%d/%m/%Y %H:%M:%S')
+        ts = datetime.strptime(timestamp, '%d/%m/%Y %H:%M')
         self.timestamp = ts
 
     def set_sent(self,sent):
         self.sent = sent
 
     def serialize(self):
-        return dict([(k, self.__getattribute__(k)) for k in self.SERIALIZE_LIST])
+        #self.timestamp = self.timestamp.strftime("%d/%m/%Y %H:%M")
+        json = dict([(k, self.__getattribute__(k)) for k in self.SERIALIZE_LIST])
+        json.update({'timestamp': self.timestamp.strftime("%d/%m/%Y %H:%M")})    
+        return json
 
     def to_string(self):
         return json.dumps(
             {'id': self.id, 'sender': self.sender, 'dest' : self.receiver, 
-             'body' : self.body, 'timestamp' : self.timestamp.strftime("%d/%m/%Y %H:%M:%S"), 'image' : self.photo, 
+             'body' : self.body, 'timestamp' : self.timestamp.strftime("%d/%m/%Y %H:%M"), 'image' : self.photo, 
              'read': self.read, 'bold': self.bold, 
              'italic': self.italic, 'underline': self.underline})

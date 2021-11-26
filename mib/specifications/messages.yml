@@ -8,102 +8,405 @@ servers:
   - url: /
 
 paths:
-  /message:
-    post:
-      summary: Add a new message
+  /message/{message_id}:
+    get:
+      summary: Get the message with id = message_id
       tags:
-        - Messages
+        - Message
+      operationId: mib.resources.messages.get_message_by_id
+      parameters:
+        - name: message_id
+          description: Message unique id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Get the message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: Message not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageNotFound'
+        default:
+          description: Error while searching for the requested messages
+    delete:
+      summary: Delete the message with id = message_id
+      tags:
+        - Message
+      operationId: mib.resources.messages.delete_message_by_id
+      parameters:
+        - name: message_id
+          description: Message unique id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        202:
+          description: Message deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Result status
+                    default: success
+                  message:
+                    type: string
+                    description: Result message
+                    default: Successfully deleted
+        404:
+          description: Message not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageNotFound'
+        default:
+          description: Error while searching for the requested messages
+    
+
+  
+  /message/{user_email}:
+    post:
+      summary: Add a new message with sender = user_email
+      tags:
+        - Message
       operationId: mib.resources.messages.create_message
+      parameters:
+        - name: user_email
+          description: User Unique Email
+          in: path
+          required: true
+          schema:
+            type: string
       requestBody:
         description: Create a new message inside microservice app
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Message'
+              $ref: '#/components/schemas/MessageFields'
       responses:
         201:
-          description: Created
-        200:
-          description: Error
+          description: Returns message created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
         default:
           description: Error during creation of the message
-
-  /search:
-    post:
-      summary: returns the searched messages
+  
+    put:
+      summary: Update the message with sender = user_email
       tags:
-        - Search
-      operationId: mib.resources.messages.search_message
+        - Message
+      operationId: mib.resources.messages.update_message
+      parameters:
+        - name: user_email
+          description: User Unique Email
+          in: path
+          required: true
+          schema:
+            type: string
       requestBody:
-        description: Returns a json containing the list of the searched messages
+        content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageFields'
+        description: Update the message inside microservice app
+        required: true
+       
+      responses:
+        200:
+          description: Returns message updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: Message not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageNotFound'
+        default:
+          description: Error during the update of the message
+
+  /search/{user_email}:
+    post:
+      summary: returns the searched messages of the user with user_email
+      tags: [ Messages ]
+      operationId: mib.resources.messages.search_message
+      parameters:
+        - name: user_email
+          description: User Unique Email of the requester
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Fields to search in the messages
         required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/Search'
       responses:
-        201:
-          description: Ok
+        200:
+          description: Returns a json containing the list of the searched messages
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FilteredMessages'
         default:
           description: Error while searching for the messages
 
-  /get_messages:
+  /inbox/{user_email}:
     get:
-      summary: get the requested list of messages
+      summary: get the inbox messages of the user with user_email
       tags:
-        - get_list
-      operationId: mib.resources.messages.get_messages
-      requestBody:
-        description: Returns a json containing the list of the requested messages
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Get_messages'
+        - Mailbox
+      operationId: mib.resources.messages.get_inbox_messages
+      parameters:
+        - name: user_email
+          description: User Unique Email
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
-        201:
-          description: Ok
+        200:
+          description: Returns a json containing the list of the inbox messages
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Messages'
+        default:
+          description: Error while searching for the requested messages
+          
+  /sent/{user_email}:
+    get:
+      summary: get the sent messages of the user with user_email
+      tags:
+        - Mailbox
+      operationId: mib.resources.messages.get_sent_messages
+      parameters:
+        - name: user_email
+          description: User Unique Email
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Returns a json containing the list of the sent messages
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Messages'
+        default:
+          description: Error while searching for the requested messages
+                    
+  /draft/{user_email}:
+    get:
+      summary: get the draft messages of the user with user_email
+      tags:
+        - Mailbox
+      operationId: mib.resources.messages.get_draft_messages
+      parameters:
+        - name: user_email
+          description: User Unique Email
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Returns a json containing the list of the draft messages
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Messages'
+        default:
+          description: Error while searching for the requested messages
+          
+  /scheduled/{user_email}:
+    get:
+      summary: get the scheduled messages of the user with user_email
+      tags:
+        - Mailbox
+      operationId: mib.resources.messages.get_scheduled_messages
+      parameters:
+        - name: user_email
+          description: User Unique Email
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Returns a json containing the list of the scheduled messages
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Messages'
         default:
           description: Error while searching for the requested messages
 
-  /get_notifications:
+  /notifications/{user_email}:
     get:
-      summary: get the number of notifications for a given user
+      summary: get the number of notifications for the user with user_email
       tags:
         - Notifications
       operationId: mib.resources.messages.get_notifications
-      requestBody:
-        description: Returns a json containing the number of notifications
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Get_notifications'
+      parameters:
+        - name: user_email
+          description: User Unique Email
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
-        201:
-          description: Ok
+        200:
+          description: Returns the number of notifications
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notifications'
         default:
-          description: Error while searching for the requested messages
+          description: Error while counting the notifications
+
 components:
   schemas:
     Message:
       required:
+        - status
+        - message
+        - body
+      type: object
+      properties:
+        status:
+          type: string
+          description: status code message
+          example: success
+        message: 
+          type: string
+          description: operation result
+          example: Operation done
+        body:
+          $ref: '#/components/schemas/MessageFields'
+    
+    MessageNotFound:
+      required:
+        - status
+        - message
+      type: object
+      properties:
+        status:
+          type: string
+          description: status code message
+          default: failure
+        message: 
+          type: string
+          description: operation result
+          default: Message not found
+
+    Messages:
+      required:
+        - status
+        - message
+        - body
+      type: object
+      properties:
+        status:
+          type: string
+          description: status code message
+          default: success
+        message: 
+          type: string
+          description: operation result
+          default: Successfully delivered list
+        body:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/MessageFields'
+
+    FilteredMessages:
+      required:
+        - status
+        - message
+        - body
+      type: object
+      properties:
+        status:
+          type: string
+          description: status code message
+          default: success
+        message: 
+          type: string
+          description: operation result
+          default: Successfully searched
+        body:
+          required:
+            - filtered_inbox
+            - filtered_sent
+            - filtered_scheduled
+          type: object
+          properties:
+            filtered_inbox:
+              description: messages in inbox that match the filter
+              type: array
+              items:
+                $ref: '#/components/schemas/MessageFields'
+            filtered_sent:
+              description: messages in sent that match the filter
+              type: "array"
+              items:
+                $ref: '#/components/schemas/MessageFields'
+            filtered_scheduled:
+              description: messages in scheduled that match the filter
+              type: "array"
+              items:
+                $ref: '#/components/schemas/MessageFields'
+          
+            
+    MessageFields:
+      required:
+        - id
         - sender
         - receiver
         - body
-        - photo
         - timestamp
-      type: object
+        - draft
+        - scheduled
+        - sent
+        - read
+        - bold
+        - italic
+        - underline
+      type: "object"
       properties:
-        sender:
+        id:
+          type: integer
+          description: Unique id of the message
+          example: 1
+        sender: 
           type: string
           description: email of sender
           example: example@example.com
         receiver:
           type: string
           description: email of receiver
-          example: example@example.com
+          example: example1@example1.com
         body:
           type: string
           description: The body of the message
@@ -111,55 +414,79 @@ components:
         photo:
           type: string
           description: The photo encoded as a string
-          example: 1
+          example: base64encoded
         timestamp:
           type: string
           description: The timestamp of the message
-          example: 12/12/2021
+          example: 12/12/2021:12:12
+        draft:
+          type: boolean
+          description: Flag indicating if the message is draft 
+          example: True
+        scheduled:
+          type: boolean
+          description: Flag indicating if the message is scheduled 
+          example: False
+        sent:
+          type: integer
+          description: Indicates if the message has been sent and/or if it has been notified  
+          example: 0
+        read:
+          type: boolean
+          description: Flag indicating if the message has been read 
+          example: False
+        bold:
+          type: boolean
+          description: Flag indicating if the message has bold text
+          example: True
+        italic:
+          type: boolean
+          description: Flag indicating if the message has italic text
+          example: True
+        underline:
+          type: boolean
+          description: Flag indicating if the message has underlined text
+          example: True
 
     Search:
-      required:
-        - id
       type: object
       properties:
-        id:
-          type: string
-          description: email of the user
-          example: example@example.com
         body:
           type: string
           description: body of the messge
           example: Hi, how are you?
         email:
           type: string
-          description: email of the sender
-          example: example@example.com
+          description: email of the receiver or email of the sender
+          example: example1@example1.com
         date:
           type: string
           description: The date of the message
           example: 03/03/2021
 
-    Get_messages:
+    Notifications:
       required:
-        - email
-        - op
+        - status
+        - message
+        - body
       type: object
       properties:
-        email:
+        status:
           type: string
-          description: email of the user
-          example: example@example.com
-        op:
+          description: status code message
+          default: success
+        message: 
           type: string
-          description: name of the operation
-          example: inbox
-
-    Get_notifications:
-      required:
-        - email
-      type: object
-      properties:
-        email:
-          type: string
-          description: email of the user
-          example: example@example.com
+          description: operation result
+          default: Successfully delivered notifications
+        body:
+          type: "object"
+          properties:
+            inbox:
+              type: integer
+              description: Number of not read messages
+              example: 2
+            sent: 
+              type: integer
+              description: Number of read messages by the receiver
+              example: 3
