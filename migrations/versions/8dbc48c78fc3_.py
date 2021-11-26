@@ -23,7 +23,7 @@ def upgrade():
     sa.Column('sender', sa.Unicode(length=128), nullable=True),
     sa.Column('receiver', sa.Unicode(length=128), nullable=True),
     sa.Column('body', sa.Unicode(length=8196), nullable=False),
-    sa.Column('photo', sa.Unicode(length=8196), nullable=True),
+    sa.Column('photo', sa.String(), nullable=True),
     sa.Column('timestamp', sa.DateTime(), nullable=True),
     sa.Column('draft', sa.Boolean(), nullable=True),
     sa.Column('scheduled', sa.Boolean(), nullable=True),
