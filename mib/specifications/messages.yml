@@ -35,7 +35,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/MessageNotFound'
         default:
-          description: Error while searching for the requested messages
+          description: Error getting the requested messages
     delete:
       summary: Delete the message with id = message_id
       tags:
@@ -71,7 +71,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/MessageNotFound'
         default:
-          description: Error while searching for the requested messages
+          description: Error deleting the requested message
     
 
   
@@ -83,7 +83,7 @@ paths:
       operationId: mib.resources.messages.create_message
       parameters:
         - name: user_email
-          description: User Unique Email
+          description: User unique email
           in: path
           required: true
           schema:
@@ -97,13 +97,13 @@ paths:
               $ref: '#/components/schemas/MessageFields'
       responses:
         201:
-          description: Returns message created
+          description: Returns the created message
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Message'
         default:
-          description: Error during creation of the message
+          description: Error creating the message
   
     put:
       summary: Update the message with sender = user_email
@@ -112,7 +112,7 @@ paths:
       operationId: mib.resources.messages.update_message
       parameters:
         - name: user_email
-          description: User Unique Email
+          description: User unique email
           in: path
           required: true
           schema:
@@ -127,7 +127,7 @@ paths:
        
       responses:
         200:
-          description: Returns message updated
+          description: Returns the updated message
           content:
             application/json:
               schema:
@@ -139,16 +139,16 @@ paths:
               schema:
                 $ref: '#/components/schemas/MessageNotFound'
         default:
-          description: Error during the update of the message
+          description: Error updating the message
 
   /search/{user_email}:
     post:
-      summary: returns the searched messages of the user with user_email
+      summary: Returns the searched messages of the user with user_email
       tags: [ Messages ]
       operationId: mib.resources.messages.search_message
       parameters:
         - name: user_email
-          description: User Unique Email of the requester
+          description: User requester unique email
           in: path
           required: true
           schema:
@@ -162,82 +162,82 @@ paths:
               $ref: '#/components/schemas/Search'
       responses:
         200:
-          description: Returns a json containing the list of the searched messages
+          description: Returns a list of the searched messages
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/FilteredMessages'
         default:
-          description: Error while searching for the messages
+          description: Error searching the messages
 
   /inbox/{user_email}:
     get:
-      summary: get the inbox messages of the user with user_email
+      summary: Get the inbox messages of the user with user_email
       tags:
         - Mailbox
       operationId: mib.resources.messages.get_inbox_messages
       parameters:
         - name: user_email
-          description: User Unique Email
+          description: User unique email
           in: path
           required: true
           schema:
             type: string
       responses:
         200:
-          description: Returns a json containing the list of the inbox messages
+          description: Returns the list of inbox messages
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Messages'
         default:
-          description: Error while searching for the requested messages
+          description: Error getting inbox messages
           
   /sent/{user_email}:
     get:
-      summary: get the sent messages of the user with user_email
+      summary: Get the sent messages of the user with user_email
       tags:
         - Mailbox
       operationId: mib.resources.messages.get_sent_messages
       parameters:
         - name: user_email
-          description: User Unique Email
+          description: User unique email
           in: path
           required: true
           schema:
             type: string
       responses:
         200:
-          description: Returns a json containing the list of the sent messages
+          description: Returns the list of sent messages
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Messages'
         default:
-          description: Error while searching for the requested messages
+          description: Error getting sent messages
                     
   /draft/{user_email}:
     get:
-      summary: get the draft messages of the user with user_email
+      summary: Get the draft messages of the user with user_email
       tags:
         - Mailbox
       operationId: mib.resources.messages.get_draft_messages
       parameters:
         - name: user_email
-          description: User Unique Email
+          description: User unique email
           in: path
           required: true
           schema:
             type: string
       responses:
         200:
-          description: Returns a json containing the list of the draft messages
+          description: Returns the list of draft messages
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Messages'
         default:
-          description: Error while searching for the requested messages
+          description: Error getting draft messages
           
   /scheduled/{user_email}:
     get:
@@ -247,30 +247,30 @@ paths:
       operationId: mib.resources.messages.get_scheduled_messages
       parameters:
         - name: user_email
-          description: User Unique Email
+          description: User unique email
           in: path
           required: true
           schema:
             type: string
       responses:
         200:
-          description: Returns a json containing the list of the scheduled messages
+          description: Returns the list of scheduled messages
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Messages'
         default:
-          description: Error while searching for the requested messages
+          description: Error getting scheduled messages
 
   /notifications/{user_email}:
     get:
-      summary: get the number of notifications for the user with user_email
+      summary: Get the number of notifications for the user with user_email
       tags:
         - Notifications
       operationId: mib.resources.messages.get_notifications
       parameters:
         - name: user_email
-          description: User Unique Email
+          description: User unique email
           in: path
           required: true
           schema:
@@ -283,7 +283,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Notifications'
         default:
-          description: Error while counting the notifications
+          description: Error counting the notifications
 
 components:
   schemas:

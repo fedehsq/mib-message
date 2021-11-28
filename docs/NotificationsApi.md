@@ -4,12 +4,12 @@ All URIs are relative to */*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**mib_resources_messages_get_notifications**](NotificationsApi.md#mib_resources_messages_get_notifications) | **GET** /notifications/{user_email} | get the number of notifications for the user with user_email
+[**mib_resources_messages_get_notifications**](NotificationsApi.md#mib_resources_messages_get_notifications) | **GET** /notifications/{user_email} | Get the number of notifications for the user with user_email
 
 # **mib_resources_messages_get_notifications**
 > Notifications mib_resources_messages_get_notifications(user_email)
 
-get the number of notifications for the user with user_email
+Get the number of notifications for the user with user_email
 
 ### Example
 ```python
@@ -21,10 +21,10 @@ from pprint import pprint
 
 # create an instance of the API class
 api_instance = swagger_client.NotificationsApi()
-user_email = 'user_email_example' # str | User Unique Email
+user_email = 'user_email_example' # str | User unique email
 
 try:
-    # get the number of notifications for the user with user_email
+    # Get the number of notifications for the user with user_email
     api_response = api_instance.mib_resources_messages_get_notifications(user_email)
     pprint(api_response)
 except ApiException as e:
@@ -35,7 +35,7 @@ except ApiException as e:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **user_email** | **str**| User Unique Email | 
+ **user_email** | **str**| User unique email | 
 
 ### Return type
 
