@@ -4,12 +4,12 @@ All URIs are relative to */*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**mib_resources_messages_search_message**](MessagesApi.md#mib_resources_messages_search_message) | **POST** /search/{user_email} | returns the searched messages of the user with user_email
+[**mib_resources_messages_search_message**](MessagesApi.md#mib_resources_messages_search_message) | **POST** /search/{user_email} | Returns the searched messages of the user with user_email
 
 # **mib_resources_messages_search_message**
 > FilteredMessages mib_resources_messages_search_message(body, user_email)
 
-returns the searched messages of the user with user_email
+Returns the searched messages of the user with user_email
 
 ### Example
 ```python
@@ -22,10 +22,10 @@ from pprint import pprint
 # create an instance of the API class
 api_instance = swagger_client.MessagesApi()
 body = swagger_client.Search() # Search | Fields to search in the messages
-user_email = 'user_email_example' # str | User Unique Email
+user_email = 'user_email_example' # str | User requester unique email
 
 try:
-    # returns the searched messages of the user with user_email
+    # Returns the searched messages of the user with user_email
     api_response = api_instance.mib_resources_messages_search_message(body, user_email)
     pprint(api_response)
 except ApiException as e:
@@ -37,7 +37,7 @@ except ApiException as e:
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **body** | [**Search**](Search.md)| Fields to search in the messages | 
- **user_email** | **str**| User Unique Email | 
+ **user_email** | **str**| User requester unique email | 
 
 ### Return type
 
