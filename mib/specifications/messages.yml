@@ -8,6 +8,29 @@ servers:
   - url: /
 
 paths:
+  /message:
+    post:
+      summary: Add a new message
+      tags:
+        - Message
+      operationId: mib.resources.messages.create_message
+      requestBody:
+        description: Create a new message inside microservice app
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MessageFields'
+      responses:
+        201:
+          description: Returns the created message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        default:
+          description: Error creating the message
+
   /message/{message_id}:
     get:
       summary: Get the message with id = message_id
@@ -36,6 +59,41 @@ paths:
                 $ref: '#/components/schemas/MessageNotFound'
         default:
           description: Error getting the requested messages
+    put:
+      summary: Update the message with id = message_id
+      tags:
+        - Message
+      operationId: mib.resources.messages.update_message
+      parameters:
+        - name: message_id
+          description: Message unique id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageFields'
+        description: Update the message inside microservice app
+        required: true
+       
+      responses:
+        200:
+          description: Returns the updated message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: Message not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageNotFound'
+        default:
+          description: Error updating the message
     delete:
       summary: Delete the message with id = message_id
       tags:
@@ -72,89 +130,14 @@ paths:
                 $ref: '#/components/schemas/MessageNotFound'
         default:
           description: Error deleting the requested message
-    
 
-  
-  /message/{user_email}:
+  /search:
     post:
-      summary: Add a new message with sender = user_email
-      tags:
-        - Message
-      operationId: mib.resources.messages.create_message
-      parameters:
-        - name: user_email
-          description: User unique email
-          in: path
-          required: true
-          schema:
-            type: string
-      requestBody:
-        description: Create a new message inside microservice app
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/MessageFields'
-      responses:
-        201:
-          description: Returns the created message
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Message'
-        default:
-          description: Error creating the message
-  
-    put:
-      summary: Update the message with sender = user_email
-      tags:
-        - Message
-      operationId: mib.resources.messages.update_message
-      parameters:
-        - name: user_email
-          description: User unique email
-          in: path
-          required: true
-          schema:
-            type: string
-      requestBody:
-        content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MessageFields'
-        description: Update the message inside microservice app
-        required: true
-       
-      responses:
-        200:
-          description: Returns the updated message
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Message'
-        404:
-          description: Message not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MessageNotFound'
-        default:
-          description: Error updating the message
-
-  /search/{user_email}:
-    post:
-      summary: Returns the searched messages of the user with user_email
+      summary: Returns the searched messages
       tags: [ Messages ]
       operationId: mib.resources.messages.search_message
-      parameters:
-        - name: user_email
-          description: User requester unique email
-          in: path
-          required: true
-          schema:
-            type: string
       requestBody:
-        description: Fields to search in the messages
+        description: Fields to search in the messages for the user with 'user_email' and 'user_id'
         required: true
         content:
           application/json:
@@ -170,19 +153,20 @@ paths:
         default:
           description: Error searching the messages
 
-  /inbox/{user_email}:
+  /inbox:
     get:
-      summary: Get the inbox messages of the user with user_email
+      summary: Get the inbox messages
       tags:
         - Mailbox
       operationId: mib.resources.messages.get_inbox_messages
-      parameters:
-        - name: user_email
-          description: User unique email
-          in: path
-          required: true
-          schema:
-            type: string
+      requestBody:
+        description: Inbox messages for the user with 'user_email' and 'user_id'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Box'
+
       responses:
         200:
           description: Returns the list of inbox messages
@@ -193,19 +177,19 @@ paths:
         default:
           description: Error getting inbox messages
           
-  /sent/{user_email}:
+  /sent:
     get:
-      summary: Get the sent messages of the user with user_email
+      summary: Get the sent messages
       tags:
         - Mailbox
       operationId: mib.resources.messages.get_sent_messages
-      parameters:
-        - name: user_email
-          description: User unique email
-          in: path
-          required: true
-          schema:
-            type: string
+      requestBody:
+        description: Sent messages for the user with 'user_email' and 'user_id'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Box'
       responses:
         200:
           description: Returns the list of sent messages
@@ -216,19 +200,19 @@ paths:
         default:
           description: Error getting sent messages
                     
-  /draft/{user_email}:
+  /draft:
     get:
-      summary: Get the draft messages of the user with user_email
+      summary: Get the draft messages
       tags:
         - Mailbox
       operationId: mib.resources.messages.get_draft_messages
-      parameters:
-        - name: user_email
-          description: User unique email
-          in: path
-          required: true
-          schema:
-            type: string
+      requestBody:
+        description: Draft messages for the user with 'user_email' and 'user_id'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Box'
       responses:
         200:
           description: Returns the list of draft messages
@@ -239,19 +223,19 @@ paths:
         default:
           description: Error getting draft messages
           
-  /scheduled/{user_email}:
+  /scheduled:
     get:
-      summary: get the scheduled messages of the user with user_email
+      summary: Get the scheduled messages
       tags:
         - Mailbox
       operationId: mib.resources.messages.get_scheduled_messages
-      parameters:
-        - name: user_email
-          description: User unique email
-          in: path
-          required: true
-          schema:
-            type: string
+      requestBody:
+        description: Scheduled messages for the user with 'user_email' and 'user_id'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Box'
       responses:
         200:
           description: Returns the list of scheduled messages
@@ -262,19 +246,19 @@ paths:
         default:
           description: Error getting scheduled messages
 
-  /notifications/{user_email}:
+  /notifications:
     get:
-      summary: Get the number of notifications for the user with user_email
+      summary: Get the number of notifications
       tags:
         - Notifications
       operationId: mib.resources.messages.get_notifications
-      parameters:
-        - name: user_email
-          description: User unique email
-          in: path
-          required: true
-          schema:
-            type: string
+      requestBody:
+        description: Notification number for the user with 'user_email' and 'user_id'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Box'
       responses:
         200:
           description: Returns the number of notifications
@@ -383,6 +367,8 @@ components:
       required:
         - id
         - sender
+        - sender_id
+        - receiver_id
         - receiver
         - body
         - timestamp
@@ -399,10 +385,18 @@ components:
           type: integer
           description: Unique id of the message
           example: 1
+        sender_id:
+          type: integer
+          description: Unique id of the user
+          example: 1
         sender: 
           type: string
           description: email of sender
           example: example@example.com
+        receiver_id:
+          type: integer
+          description: Unique id of the user
+          example: 2
         receiver:
           type: string
           description: email of receiver
@@ -449,8 +443,19 @@ components:
           example: True
 
     Search:
+      required:
+        - user_id
+        - user_email
       type: object
       properties:
+        user_id:
+          type: integer
+          description: unique id of requester user
+          example: 1
+        user_email:
+          type: string
+          description: unique email of the requester user
+          example: example@example.com
         body:
           type: string
           description: body of the messge
@@ -463,6 +468,20 @@ components:
           type: string
           description: The date of the message
           example: 03/03/2021
+    Box:
+      required:
+        - user_id
+        - user_email
+      type: object
+      properties:
+        user_id:
+          type: integer
+          description: unique id of requester user
+          example: 1
+        user_email:
+          type: string
+          description: unique email of the requester user
+          example: example@example.com
 
     Notifications:
       required:
