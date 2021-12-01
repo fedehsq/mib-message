@@ -14,7 +14,7 @@ class Message(db.Model):
     # A list of fields to be serialized
     SERIALIZE_LIST = ['id', 'sender', 'receiver', 'body', 'photo',\
              'draft', 'scheduled', 'sent', 'read', 'bold', 'italic',\
-             'underline', 'hidden_for_sender', 'hidden_for_receiver']
+             'underline']
 
     # All fields of message
     id = db.Column(db.Integer, primary_key = True, autoincrement = True, nullable = False)
@@ -25,13 +25,18 @@ class Message(db.Model):
     timestamp = db.Column(db.DateTime(timezone = True))
     draft = db.Column(db.Boolean)
     scheduled = db.Column(db.Boolean)
+    # 0 for not yet sent,
+    # 1 for sent but not read by the receiver, 
+    # 2 sender knows that receiver reads the message
     sent = db.Column(db.Integer, default = 0)
-    read = db.Column(db.Boolean, default = False)
+    # 0 for not yet read, 
+    # 1 for read, 
+    # 2 the read has been notified to the sender
+    read = db.Column(db.Integer, default = 0)
     bold = db.Column(db.Boolean)
     italic = db.Column(db.Boolean)
     underline = db.Column(db.Boolean)
-    hidden_for_sender = db.Column(db.Boolean, default = False)
-    hidden_for_receiver = db.Column(db.Boolean, default = False)
+    
 
     def __init__(self, *args, **kw):
         super(Message, self).__init__(*args, **kw)
