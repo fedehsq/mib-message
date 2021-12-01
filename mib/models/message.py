@@ -6,18 +6,22 @@ from mib import db
 import json
 
 class Message(db.Model):
-    """Representation of Message model."""
+    """
+    Representation of Message model
+    """
 
     # The name of the table that we explicitly set
     __tablename__ = 'Message'
 
     # A list of fields to be serialized
-    SERIALIZE_LIST = ['id', 'sender', 'receiver', 'body', 'photo',\
+    SERIALIZE_LIST = ['id', 'sender_id', 'receiver_id', 'sender', 'receiver', 'body', 'photo',\
              'draft', 'scheduled', 'sent', 'read', 'bold', 'italic',\
              'underline']
 
     # All fields of message
     id = db.Column(db.Integer, primary_key = True, autoincrement = True, nullable = False)
+    sender_id = db.Column(db.Integer())
+    receiver_id = db.Column(db.Integer())
     sender = db.Column(db.Unicode(128))
     receiver = db.Column(db.Unicode(128))
     body = db.Column(db.Unicode(8196))
@@ -45,6 +49,12 @@ class Message(db.Model):
         date = self.timestamp.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
         date = datetime.strptime(date, "%d/%m/%Y")
         return date
+
+    def set_sender_id(self, sender_id):
+        self.sender_id = sender_id
+
+    def set_receiver_id(self, receiver_id):
+        self.receiver_id = receiver_id
 
     def set_sender(self, sender):
         self.sender = sender
