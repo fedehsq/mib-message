@@ -1,8 +1,10 @@
+from re import M
 from flask import request, jsonify
+from sqlalchemy.sql.expression import or_
 from mib.dao.message_manager import MessageManager
 from mib.models.message import Message
 from mib import db
-from sqlalchemy import cast, Date
+from sqlalchemy import cast, Date, or_
 from datetime import datetime, timedelta
 import json
 
@@ -97,6 +99,8 @@ def update_message(user_email):
     message.set_photo(post_data.get('photo'))
     message.set_timestamp(post_data.get('timestamp'))
     message.set_draft(post_data.get('draft'))
+    message.set_read(post_data.get('read'))
+    message.set_sent(post_data.get('sent'))
     message.set_scheduled(post_data.get('scheduled'))
     message.set_bold(post_data.get('bold'))
     message.set_italic(post_data.get('italic'))
@@ -173,8 +177,8 @@ def get_inbox_messages(user_email):
     for the user with email == user_email.
     """
     messages = db.session.query(Message).filter( \
-        Message.receiver == user_email, 
-        Message.sent == 1, 
+        Message.receiver == user_email, or_(
+        Message.sent == 1,  Message.sent == 2),
         Message.hidden_for_receiver == False)
     response_object = {
         'status':'success',
@@ -205,7 +209,7 @@ def get_sent_messages(user_email):
     for the user with email == user_email.
     """
     messages = db.session.query(Message).filter(\
-        Message.sender == user_email, Message.sent == 1,
+        Message.sender == user_email, or_(Message.sent == 1, Message.sent == 2),
         Message.hidden_for_sender == False)
     response_object = {
         'status':'success',
