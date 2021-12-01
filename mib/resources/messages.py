@@ -223,7 +223,7 @@ def get_notifications(user_email):
     sent = db.session.query(Message).filter(\
         Message.sender == user_email,
         Message.sent == 1, 
-        Message.read == 1).count()
+        or_(Message.read == 1, Message.read == 2)).count()
        
     response_object = {
         'status':'success',
