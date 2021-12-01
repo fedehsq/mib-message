@@ -237,7 +237,7 @@ def get_notifications():
         Message.sender_id == user_id,
         Message.sent == 1, 
         or_(Message.read == 1, Message.read == 2)).count()
-    
+
     response_object = {
         'status':'success',
         'message':'Successfully delivered notifications',
