@@ -28,12 +28,10 @@ def upgrade():
     sa.Column('draft', sa.Boolean(), nullable=True),
     sa.Column('scheduled', sa.Boolean(), nullable=True),
     sa.Column('sent', sa.Integer(), nullable=True),
-    sa.Column('read', sa.Boolean(), nullable=True),
+    sa.Column('read', sa.Integer(), nullable=True),
     sa.Column('bold', sa.Boolean(), nullable=True),
     sa.Column('italic', sa.Boolean(), nullable=True),
     sa.Column('underline', sa.Boolean(), nullable=True),
-    sa.Column('hidden_for_sender', sa.Boolean(), nullable=True),
-    sa.Column('hidden_for_receiver', sa.Boolean(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
     # ### end Alembic commands ###

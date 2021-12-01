@@ -432,9 +432,9 @@ components:
           description: Indicates if the message has been sent and/or if it has been notified  
           example: 0
         read:
-          type: boolean
+          type: integer
           description: Flag indicating if the message has been read 
-          example: False
+          example: 0
         bold:
           type: boolean
           description: Flag indicating if the message has bold text

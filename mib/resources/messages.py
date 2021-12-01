@@ -53,7 +53,10 @@ def create_message(user_email):
     This method allows the creation of a new message
     for the user with email == user_email.
     """
+    print('prima di create')
     post_data = request.get_json()
+    print('prima di get json')
+    print(post_data)
     #mail_sender = post_data.get('sender')
     email_receiver = post_data.get('receiver')
     message = Message()
@@ -67,6 +70,8 @@ def create_message(user_email):
     message.set_bold(post_data.get('bold'))
     message.set_italic(post_data.get('italic'))
     message.set_underline(post_data.get('underline'))
+    print('messaggio!')
+    print(message.serialize())
     #just for test purposes set sent=1
     #message.set_sent(1)
     ###################
@@ -140,46 +145,15 @@ def search_message(user_email):
     }
     return jsonify(response_object), 200
 
-"""#this function returns the requested list of messages
-def get_messages(email):
-    #gets from the request the id of the user and the desidered list
-    post_data=request.get_json()
-    #id_user = post_data.get('email')
-    type_of_list = post_data.get('op')
-    #messages=''
-
-    #cases for each function
-    if type_of_list == "inbox":
-        messages = db.session.query(Message).filter(Message.receiver == email,Message.sent==1, Message.hidden_for_receiver==False)
-    if type_of_list == "scheduled":
-        messages = db.session.query(Message).filter(Message.sender == email,Message.scheduled==True)
-    if type_of_list == "sent":
-        messages = db.session.query(Message).filter(Message.sender == email,Message.sent==1, Message.hidden_for_sender==False)
-    if type_of_list == "draft":
-        messages = db.session.query(Message).filter(Message.sender == email,Message.draft==True)
-        
-    #assembling the json
-    msgs=[]
-    for m in messages:
-        msgs.append(m.to_string())
-    #assembling the response
-    response_object={
-        'list': [message.serialize() for message in messages],
-        'status':'success',
-        'message':'successfully delivered list'
-    }
-    return jsonify(response_object), 200"""
-
-
 def get_inbox_messages(user_email):
     """    
     this function returns the inbox messages
     for the user with email == user_email.
     """
-    messages = db.session.query(Message).filter( \
-        Message.receiver == user_email, or_(
-        Message.sent == 1,  Message.sent == 2),
-        Message.hidden_for_receiver == False)
+    messages = db.session.query(Message).filter(\
+        # in this way the messages read don't deseappear in the mailbox
+        Message.receiver == user_email, 
+        or_(Message.sent == 1,  Message.sent == 2))
     response_object = {
         'status':'success',
         'message':'successfully delivered list',
@@ -209,8 +183,10 @@ def get_sent_messages(user_email):
     for the user with email == user_email.
     """
     messages = db.session.query(Message).filter(\
-        Message.sender == user_email, or_(Message.sent == 1, Message.sent == 2),
-        Message.hidden_for_sender == False)
+        Message.sender == user_email, 
+        # in this way the messages read don't deseappear in the mailbox
+        or_(Message.sent == 1, Message.sent == 2),
+        )
     response_object = {
         'status':'success',
         'message':'Successfully delivered list',
@@ -243,11 +219,11 @@ def get_notifications(user_email):
     inbox = db.session.query(Message).filter(\
         Message.receiver == user_email,
         Message.sent == 1, 
-        Message.read == False).count()
+        Message.read == 0).count()
     sent = db.session.query(Message).filter(\
         Message.sender == user_email,
         Message.sent == 1, 
-        Message.read == True).count()
+        Message.read == 1).count()
        
     response_object = {
         'status':'success',
