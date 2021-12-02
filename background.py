@@ -41,6 +41,7 @@ def send_messages():
             Message.scheduled == True, 
             Message.timestamp <= datetime.now()).all()
         for message in messages:
+            
             message.sent = 1
             message.scheduled = False
             send_sent_notifications(message)

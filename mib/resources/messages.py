@@ -225,8 +225,6 @@ def get_notifications():
     post_data = request.get_json()
     user_id = post_data.get('user_id')
     user_email = post_data.get('user_email')
-    print(user_id)
-    print(user_email)
     inbox = db.session.query(Message).filter(\
         Message.receiver == user_email,
         Message.receiver_id == user_id,
@@ -237,7 +235,6 @@ def get_notifications():
         Message.sender_id == user_id,
         Message.sent == 1, 
         or_(Message.read == 1, Message.read == 2)).count()
-
     response_object = {
         'status':'success',
         'message':'Successfully delivered notifications',
