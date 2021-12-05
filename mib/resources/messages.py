@@ -121,9 +121,9 @@ def search_message():
     email = post_data.get('sender')
     date = post_data.get('date')
 
+    #filtered_inbox, filtered_sent, filtered_scheduled = [],[],[]
     # search
-    filtered_inbox, filtered_sent, filtered_scheduled = \
-        search_messages(user_id, user_email, body, email, date)
+    filtered_inbox, filtered_sent, filtered_scheduled = search_messages(user_id, user_email, body, email, date)
 
     response_object = {
         'status': 'success',
@@ -276,7 +276,6 @@ def search_messages(user_id, user_email, body, sender, date):
         Message.sender == user_email, 
         Message.scheduled == True,
         Message.body.contains(body),
-        Message.sender.contains(sender),
         Message.timestamp.cast(Date) == date if date else True     
         ).all()
     return inbox, sent, scheduled
