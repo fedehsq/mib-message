@@ -36,6 +36,7 @@ class TestMessage(ModelTest):
         bold = False
         italic = False
         underline = False
+        deleted = 0
 
 
         from mib.models import Message
@@ -52,7 +53,8 @@ class TestMessage(ModelTest):
             scheduled = scheduled,
             bold = bold,
             italic = italic,
-            underline = underline
+            underline = underline,
+            deleted = deleted
         )
 
         return message

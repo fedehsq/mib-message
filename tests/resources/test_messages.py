@@ -24,7 +24,8 @@ class TestMessages(ViewTest):
             'read': 0,
             'bold': False,
             'italic': False,
-            'underline': False
+            'underline': False,
+            'deleted': 0
         }
         rv = self.client.post('/message', json=data)
         
@@ -46,7 +47,8 @@ class TestMessages(ViewTest):
             'read': 0,
             'bold': False,
             'italic': False,
-            'underline': False
+            'underline': False,
+            'deleted': 1
         }
         rv = self.client.post('/message', json=data)
         body=rv.json["body"]
@@ -75,7 +77,8 @@ class TestMessages(ViewTest):
             'read': 0,
             'bold': False,
             'italic': False,
-            'underline': False
+            'underline': False,
+            'deleted': 0
         }
         rv = self.client.post('/message', json=data)
         body=rv.json["body"]
@@ -103,7 +106,8 @@ class TestMessages(ViewTest):
             'read': 0,
             'bold': False,
             'italic': False,
-            'underline': False
+            'underline': False,
+            'deleted': 0
         }
         rv = self.client.post('/message', json=data)
         body=rv.json["body"]
