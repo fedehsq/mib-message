@@ -1,5 +1,5 @@
 # Message in A Bottle - messages
-
+[![Build Status](https://app.travis-ci.com/fedehsq/mib-message.svg?token=sCUbEzotwbjEpdHdvWDb&branch=main)](https://app.travis-ci.com/fedehsq/mib-message) [![Coverage Status](https://coveralls.io/repos/github/fedehsq/mib-message/badge.svg?branch=main&t=Ava9Tp)](https://coveralls.io/github/fedehsq/mib-message?branch=main)
 This is the source code of Message in a Bottle application, self project of *Advanced Software Engineering* course,
 University of Pisa.
 
