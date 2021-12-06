@@ -100,6 +100,7 @@ def update_message(message_id):
     message.set_draft(post_data.get('draft'))
     message.set_read(post_data.get('read'))
     message.set_sent(post_data.get('sent'))
+    message.set_deleted(post_data.get('deleted'))
     message.set_scheduled(post_data.get('scheduled'))
     message.set_bold(post_data.get('bold'))
     message.set_italic(post_data.get('italic'))
@@ -146,6 +147,7 @@ def get_inbox_messages():
     user_email = post_data.get('user_email')
     messages = db.session.query(Message).filter(\
         # in this way the messages read don't deseappear in the mailbox
+        Message.deleted != 1,
         Message.receiver == user_email,
         Message.receiver_id == user_id,
         or_(Message.sent == 1,  Message.sent == 2))
@@ -175,7 +177,6 @@ def get_scheduled_messages():
     }
     return jsonify(response_object), 200
 
-
 def get_sent_messages():
     """    
     this function returns the sent messages
@@ -185,6 +186,7 @@ def get_sent_messages():
     user_id = post_data.get('user_id')
     user_email = post_data.get('user_email')
     messages = db.session.query(Message).filter(\
+        Message.deleted != 2,
         Message.sender == user_email,
         Message.sender_id == user_id,
         # in this way the messages read don't deseappear in the mailbox
@@ -216,7 +218,6 @@ def get_draft_messages():
     }
     return jsonify(response_object), 200
 
-
 def get_notifications():
     """
     This function returns the notification numbers
@@ -226,11 +227,13 @@ def get_notifications():
     user_id = post_data.get('user_id')
     user_email = post_data.get('user_email')
     inbox = db.session.query(Message).filter(\
+        Message.deleted != 1,
         Message.receiver == user_email,
         Message.receiver_id == user_id,
         Message.sent == 1, 
         Message.read == 0).count()
     sent = db.session.query(Message).filter(\
+        Message.deleted != 2,
         Message.sender == user_email,
         Message.sender_id == user_id,
         Message.sent == 1, 
@@ -258,6 +261,7 @@ def search_messages(user_id, user_email, body, sender, date):
         #  2022-06-05 12:12:00
         date = datetime.strptime(date, '%Y-%m-%d')
     inbox = db.session.query(Message).filter(\
+        Message.deleted != 1,
         Message.receiver_id == user_id, 
         Message.receiver == user_email, 
         Message.sent != 0,
@@ -265,6 +269,7 @@ def search_messages(user_id, user_email, body, sender, date):
         Message.timestamp.cast(Date) == date if date else True
         ).all()
     sent = db.session.query(Message).filter(\
+        Message.deleted != 2,
         Message.sender_id == user_id, 
         Message.sender == user_email, 
         Message.sent != 0,
