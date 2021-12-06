@@ -15,7 +15,7 @@ class Message(db.Model):
 
     # A list of fields to be serialized
     SERIALIZE_LIST = ['id', 'sender_id', 'receiver_id', 'sender', 'receiver', 'body', 'photo',\
-             'draft', 'scheduled', 'sent', 'read', 'bold', 'italic',\
+             'draft', 'scheduled', 'sent', 'read', 'deleted', 'bold', 'italic',\
              'underline']
 
     # All fields of message
@@ -37,6 +37,10 @@ class Message(db.Model):
     # 1 for read, 
     # 2 the read has been notified to the sender
     read = db.Column(db.Integer, default = 0)
+    # 0 for not yet deleted, 
+    # 1 for deleted by recipient, 
+    # 2 for deleted by sender
+    deleted = db.Column(db.Integer, default = 0)
     bold = db.Column(db.Boolean)
     italic = db.Column(db.Boolean)
     underline = db.Column(db.Boolean)
@@ -95,6 +99,10 @@ class Message(db.Model):
 
     def set_sent(self,sent):
         self.sent = sent
+    
+    def set_deleted(self, deleted):
+        self.deleted = deleted
+
 
     def serialize(self):
         #self.timestamp = self.timestamp.strftime("%d/%m/%Y %H:%M")

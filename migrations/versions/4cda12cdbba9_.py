@@ -31,6 +31,7 @@ def upgrade():
     sa.Column('scheduled', sa.Boolean(), nullable=True),
     sa.Column('sent', sa.Integer(), nullable=True),
     sa.Column('read', sa.Integer(), nullable=True),
+    sa.Column('deleted', sa.Integer(), nullable=True),
     sa.Column('bold', sa.Boolean(), nullable=True),
     sa.Column('italic', sa.Boolean(), nullable=True),
     sa.Column('underline', sa.Boolean(), nullable=True),
