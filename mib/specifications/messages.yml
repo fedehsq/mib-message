@@ -379,6 +379,7 @@ components:
         - bold
         - italic
         - underline
+        - deleted
       type: "object"
       properties:
         id:
@@ -441,6 +442,10 @@ components:
           type: boolean
           description: Flag indicating if the message has underlined text
           example: True
+        deleted:
+          type: integer
+          description: Deleted value (hide message) for sender (2) or receiver (1)
+          example: 0
 
     Search:
       required:
